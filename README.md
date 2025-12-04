@@ -122,42 +122,28 @@ eas build -p android --profile preview
 ## 📚 **Library Install Commands**
 
 ```bash
-# -------------------------------------------------------
 # Navigation
-# -------------------------------------------------------
 npx expo install react-native-screens react-native-safe-area-context
 npm install @react-navigation/native @react-navigation/native-stack @react-navigation/bottom-tabs
 
-# -------------------------------------------------------
 # AsyncStorage (Local Storage)
-# -------------------------------------------------------
 npx expo install @react-native-async-storage/async-storage
 
-# -------------------------------------------------------
 # UI Components
-# -------------------------------------------------------
 npm install react-native-paper
 npx expo install react-native-vector-icons
 
-# -------------------------------------------------------
 # Charts & Insights
-# -------------------------------------------------------
 npm install victory-native
 npx expo install react-native-svg
 
-# -------------------------------------------------------
 # Forms & Validation
-# -------------------------------------------------------
 npm install formik yup
 
-# -------------------------------------------------------
 # Notifications (Local Reminders)
-# -------------------------------------------------------
 npx expo install expo-notifications
 
-# -------------------------------------------------------
 # State Management (Zustand)
-# -------------------------------------------------------
 npm install zustand
 ```
 
