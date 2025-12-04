@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 export const lightTheme = {
     colors: {
         background: '#F3F4F6', // Cool Gray 100
@@ -38,27 +40,48 @@ export const lightTheme = {
         button: { fontSize: 16, fontWeight: '600' as const },
     },
     shadows: {
-        small: {
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 2,
-        },
-        medium: {
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.1,
-            shadowRadius: 6,
-            elevation: 4,
-        },
-        large: {
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 10 },
-            shadowOpacity: 0.1,
-            shadowRadius: 15,
-            elevation: 10,
-        },
+        small: Platform.select({
+            ios: {
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.05,
+                shadowRadius: 2,
+            },
+            android: {
+                elevation: 2,
+            },
+            web: {
+                boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)',
+            }
+        }) as any,
+        medium: Platform.select({
+            ios: {
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.1,
+                shadowRadius: 6,
+            },
+            android: {
+                elevation: 4,
+            },
+            web: {
+                boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+            }
+        }) as any,
+        large: Platform.select({
+            ios: {
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 10 },
+                shadowOpacity: 0.1,
+                shadowRadius: 15,
+            },
+            android: {
+                elevation: 10,
+            },
+            web: {
+                boxShadow: '0px 10px 15px rgba(0, 0, 0, 0.1)',
+            }
+        }) as any,
     }
 };
 
