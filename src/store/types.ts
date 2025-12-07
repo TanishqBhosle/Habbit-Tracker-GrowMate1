@@ -1,44 +1,44 @@
 // A Habit = one task the user wants to do daily
 export interface Habit {
-  id: string;
   // Unique ID for each habit (we generate it using Date.now().toString())
+  id: string;
 
-  name: string;
   // Name of the habit (example: "Drink Water")
+  name: string;
 
-  description?: string;
   // Optional small note about the habit
+  description?: string;
 
-  createdAt: string;
   // Date when the habit was created (in ISO format like '2025-01-02T10:00:00Z')
+  createdAt: string;
 
-  completedDates: string[];
   // List of dates when the habit was completed
   // Example: ["2025-01-02", "2025-01-03"]
+  completedDates: string[];
 
-  color?: string;
   // Optional color to highlight the habit (from your color picker)
+  color?: string;
 
-  category?: string;
   // Optional category (Health, Study, Fitness, etc.)
+  category?: string;
 
-  streak: number;
   // Current streak count
+  streak: number;
 
-  bestStreak: number;
   // All-time best streak
+  bestStreak: number;
 
-  reminderTime?: string;
   // Optional reminder time (ISO string or HH:mm)
+  reminderTime?: string;
 
-  notificationId?: string;
   // ID of the scheduled notification
+  notificationId?: string;
 }
 
 // DeletedHabit = normal habit + one extra field "deletedAt"
 export interface DeletedHabit extends Habit {
-  deletedAt: string;
   // Date when the habit was deleted
+  deletedAt: string;
 }
 
 // Navigation types for Root Navigation

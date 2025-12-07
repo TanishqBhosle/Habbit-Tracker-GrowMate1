@@ -1,116 +1,163 @@
+// Import React library to use React components
 import React from "react";
-// Import basic UI components from React Native
+// Import basic UI components from React Native library
 import {
+  // TouchableOpacity handles touch events with opacity feedback
   TouchableOpacity,
+  // Text component for displaying text
   Text,
+  // StyleSheet for creating styles
   StyleSheet,
+  // ActivityIndicator for showing loading spinner
   ActivityIndicator,
+  // Type definition for View styles
   ViewStyle,
+  // Type definition for Text styles
   TextStyle,
 } from "react-native";
 
-// Import custom theme system
+// Import custom theme system hook
 import { useTheme } from "../context/ThemeContext";
 
 // Defining what props (inputs) our Button accepts
 interface ButtonProps {
-  title: string;                  // Button text
-  onPress: () => void;            // Function when button is clicked
-  variant?: "primary" | "secondary" | "outline" | "danger"; // Button type
-  loading?: boolean;              // Show loading spinner
-  disabled?: boolean;             // Disable the button
-  style?: ViewStyle;              // Extra styles for button box
-  textStyle?: TextStyle;          // Extra styles for text
-  icon?: React.ReactNode;         // Add an icon before text
+  // The text to display on the button
+  title: string;
+  // Function to call when button is clicked
+  onPress: () => void;
+  // Type of button style: primary, secondary, outline, or danger
+  variant?: "primary" | "secondary" | "outline" | "danger";
+  // If true, show a loading spinner
+  loading?: boolean;
+  // If true, make the button unclickable
+  disabled?: boolean;
+  // Extra styles for the button container
+  style?: ViewStyle;
+  // Extra styles for the button text
+  textStyle?: TextStyle;
+  // Optional icon element to display
+  icon?: React.ReactNode;
 }
 
-// Main Button component
+// Main Button component definition
 export const Button: React.FC<ButtonProps> = ({
+  // Destructure props with default values
   title,
   onPress,
-  variant = "primary", // default variant
-  loading = false,
-  disabled = false,
+  variant = "primary", // Default to primary style
+  loading = false, // Default to not loading
+  disabled = false, // Default to enabled
   style,
   textStyle,
   icon,
 }) => {
-  // Get theme colors, spacing, radius etc.
+  // Get theme colors, spacing, and other values from the theme context
   const { theme } = useTheme();
 
-  // Pick background color according to button type
+  // Function to determine background color based on button state and variant
   const getBackgroundColor = () => {
-    if (disabled) return theme.colors.border; // gray color when disabled
+    // If button is disabled, return a gray color
+    if (disabled) return theme.colors.border;
 
+    // Switch based on the variant prop
     switch (variant) {
       case "primary":
-        return theme.colors.primary; // blue
+        // Return primary theme color (e.g., blue)
+        return theme.colors.primary;
       case "secondary":
-        return theme.colors.secondary; // purple/green etc
+        // Return secondary theme color
+        return theme.colors.secondary;
       case "danger":
-        return theme.colors.error; // red
+        // Return error theme color (e.g., red)
+        return theme.colors.error;
       case "outline":
-        return "transparent"; // no background
+        // Return transparent for outline buttons
+        return "transparent";
       default:
+        // Default to primary color
         return theme.colors.primary;
     }
   };
 
-  // Pick text color
+  // Function to determine text color
   const getTextColor = () => {
-    if (disabled) return theme.colors.textSecondary; // light gray
+    // If disabled, return a lighter text color
+    if (disabled) return theme.colors.textSecondary;
 
+    // Switch based on variant
     switch (variant) {
       case "outline":
-        return theme.colors.primary; // blue text
+        // For outline buttons, use primary color for text
+        return theme.colors.primary;
       default:
-        return "#FFFFFF"; // white
+        // For filled buttons, use white text
+        return "#FFFFFF";
     }
   };
 
-  // Add border only for outline button
+  // Function to get border styles for outline buttons
   const getBorder = () => {
+    // Only apply border if variant is 'outline'
     if (variant === "outline") {
       return {
+        // Set border width
         borderWidth: 1,
+        // Set border color based on disabled state
         borderColor: disabled
           ? theme.colors.border
-          : theme.colors.primary, // gray when disabled
+          : theme.colors.primary,
       };
     }
-    return {}; // no border otherwise
+    // Return empty object if not outline
+    return {};
   };
 
+  // Render the button
   return (
+    // Generic touchable wrapper
     <TouchableOpacity
       style={[
-        styles.button, // basic structure (row + center)
+        // Apply base button styles
+        styles.button,
         {
+          // Set background color dynamically
           backgroundColor: getBackgroundColor(),
+          // Set border radius from theme
           borderRadius: theme.borderRadius.m,
+          // Set padding from theme
           padding: theme.spacing.m,
         },
-        getBorder(), // adds border for outline variant
-        style, // extra custom user style
+        // Apply dynamic border styles
+        getBorder(),
+        // Apply any custom styles passed as props
+        style,
       ]}
+      // Set the press handler
       onPress={onPress}
-      disabled={disabled || loading} // can't click if disabled or loading
-      activeOpacity={0.8} // button fade when pressed
+      // Disable interaction if disabled or loading
+      disabled={disabled || loading}
+      // Set opacity when pressed
+      activeOpacity={0.8}
     >
-      {/* --- Show loader when loading --- */}
+      {/* Conditionally render content */}
+      {/* if loading is true, show spinner */}
       {loading ? (
         <ActivityIndicator color={getTextColor()} />
       ) : (
+        // Otherwise show icon and text
         <>
-          {/* If icon passed, show it */}
+          {/* If an icon is provided, render it */}
           {icon}
 
-          {/* Button text */}
+          {/* Render the button text */}
           <Text
             style={[
-              theme.typography.button,   // theme font style
-              { color: getTextColor(), marginLeft: icon ? 8 : 0 }, // add space if icon
-              textStyle,                 // extra custom style
+              // Apply base button typography from theme
+              theme.typography.button,
+              // Apply dynamic text color and margin if icon exists
+              { color: getTextColor(), marginLeft: icon ? 8 : 0 },
+              // Apply custom text styles
+              textStyle,
             ]}
           >
             {title}
@@ -121,11 +168,14 @@ export const Button: React.FC<ButtonProps> = ({
   );
 };
 
-// Basic style for container
+// Define static styles using StyleSheet
 const styles = StyleSheet.create({
   button: {
-    flexDirection: "row",        // icon + text in 1 line
-    justifyContent: "center",    // center horizontally
-    alignItems: "center",        // center vertically
+    // Arrange children in a row
+    flexDirection: "row",
+    // Center children horizontally
+    justifyContent: "center",
+    // Center children vertically
+    alignItems: "center",
   },
 });

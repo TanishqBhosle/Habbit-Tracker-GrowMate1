@@ -1,71 +1,92 @@
+// Import React library
 import React from "react";
+// Import View, StyleSheet, and ViewStyle from React Native
 import { View, StyleSheet, ViewStyle } from "react-native";
+// Import the custom theme hook
 import { useTheme } from "../context/ThemeContext";
 
-// Props for Card
+// Define the properties (props) for the Card component
 interface CardProps {
-  children: React.ReactNode;   // Anything inside <Card>...</Card>
-  style?: ViewStyle;           // Extra custom styling
-  variant?: "elevated" | "outlined" | "flat"; // Type of card
+  // Children elements to be rendered inside the card
+  children: React.ReactNode;
+  // Optional custom styles for the card
+  style?: ViewStyle;
+  // Variant of the card: raised, outlined, or flat
+  variant?: "elevated" | "outlined" | "flat";
 }
 
-// Main Card component
+// Define the Card component as a functional component
 export const Card: React.FC<CardProps> = ({
+  // Destructure props
   children,
   style,
-  variant = "elevated", // default type is elevated
+  variant = "elevated", // Default variant is 'elevated'
 }) => {
-  // Get theme colors, spacing, shadows, radius etc.
+  // Use the theme context to access colors and shadows
   const { theme } = useTheme();
 
-  // Choose style based on the variant
+  // Function to determine styles based on the card variant
   const getVariantStyle = () => {
     switch (variant) {
-      // Card with shadow
+      // Style for elevated card (with shadow)
       case "elevated":
         return {
+          // Set background color from theme
           backgroundColor: theme.colors.surface,
-          ...theme.shadows.small, // adds small shadow
+          // Apply small shadow from theme
+          ...theme.shadows.small,
         };
 
-      // Card with border
+      // Style for outlined card (with border)
       case "outlined":
         return {
+          // Set background color
           backgroundColor: theme.colors.surface,
+          // Set border width
           borderWidth: 1,
+          // Set border color from theme
           borderColor: theme.colors.border,
         };
 
-      // Simple card, no border or shadow
+      // Style for flat card (no shadow or border)
       case "flat":
         return {
+          // Set background color to general background
           backgroundColor: theme.colors.background,
         };
 
+      // Default return empty object
       default:
         return {};
     }
   };
 
+  // Render the card using a View component
   return (
     <View
       style={[
-        styles.card,                         // base padding + margin
-        { borderRadius: theme.borderRadius.m }, // rounded corners
-        getVariantStyle(),                   // selected variant style
-        style,                                // custom styles from user
+        // Apply base card styles
+        styles.card,
+        // Apply border radius from theme
+        { borderRadius: theme.borderRadius.m },
+        // Apply the variant-specific styles
+        getVariantStyle(),
+        // Apply any custom styles passed in props
+        style,
       ]}
     >
-      {/* Content inside the Card */}
+      {/* Render the children components inside the View */}
       {children}
     </View>
   );
 };
 
-// Base styles
+// Define styles using StyleSheet
 const styles = StyleSheet.create({
   card: {
-    padding: 16,       // space inside the card
-    marginBottom: 16,  // space below the card
+    // Add internal padding
+    padding: 16,
+    // Add margin at the bottom
+    marginBottom: 16,
   },
 });

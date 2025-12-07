@@ -1,4 +1,6 @@
+// Import React library
 import React from "react";
+// Import components and APIs from React Native
 import {
   View,
   Text,
@@ -7,58 +9,69 @@ import {
   LayoutAnimation,
 } from "react-native";
 
-// Icon library
+// Import Ionicons for icons
 import { Ionicons } from "@expo/vector-icons";
 
-// Custom theme system
+// Import custom theme hook
 import { useTheme } from "../context/ThemeContext";
 
-// Reusable Card component
+// Import reusable Card component
 import { Card } from "./Card";
 
-// Types
+// Import Habit type definition
 import { Habit } from "../store/types";
 
-// Props for each habit item
+// Define props for the HabitItem component
 interface HabitItemProps {
-  habit: Habit;          // habit object (name, description, color, etc.)
-  isCompleted: boolean;  // true if habit is marked complete
-  onToggle: () => void;  // when checkbox is pressed
-  onPress: () => void;   // when whole habit item is pressed
+  // The habit object containing data like name and streak
+  habit: Habit;
+  // Boolean indicating if the habit is completed for today
+  isCompleted: boolean;
+  // Function to call when the checkbox is toggled
+  onToggle: () => void;
+  // Function to call when the item is pressed (for details)
+  onPress: () => void;
 }
 
-// Main Habit Item component
+// Main HabitItem functional component
 export const HabitItem: React.FC<HabitItemProps> = ({
   habit,
   isCompleted,
   onToggle,
   onPress,
 }) => {
-  const { theme } = useTheme(); // Get theme colors + typography
+  // Access theme from context
+  const { theme } = useTheme();
 
-  // Handle checkbox press with smooth animation
+  // Enhanced toggle function with animation
   const handleToggle = () => {
+    // Configure layout animation for smooth state change effects
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    // Call the original onToggle function
     onToggle();
   };
 
+  // Render the component
   return (
-    // Wrapper card around each habit
+    // Wrap content in a Card component
     <Card style={styles.card}>
-      {/* When user taps the left area → open habit details */}
+      {/* Touchable area for habit details (left side) */}
       <TouchableOpacity style={styles.content} onPress={onPress} activeOpacity={0.7}>
         <View style={styles.textContainer}>
 
-          {/* Habit name */}
+          {/* Display Habit Name */}
           <Text
             style={[
+              // Apply h3 typography style
               theme.typography.h3,
               {
+                // Set color: gray if completed, normal text color if not
                 color: isCompleted
-                  ? theme.colors.textSecondary     // faded color if completed
-                  : theme.colors.text,             // normal color
+                  ? theme.colors.textSecondary
+                  : theme.colors.text,
+                // Add strikethrough if completed
                 textDecorationLine: isCompleted
-                  ? "line-through"                 // line through when done
+                  ? "line-through"
                   : "none",
               },
             ]}
@@ -66,11 +79,13 @@ export const HabitItem: React.FC<HabitItemProps> = ({
             {habit.name}
           </Text>
 
-          {/* Habit description (optional) */}
+          {/* Conditional rendering: if description exists, show it */}
           {!!habit.description && (
             <Text
               style={[
+                // Apply caption typography style
                 theme.typography.caption,
+                // Set color and top margin
                 { color: theme.colors.textSecondary, marginTop: 4 },
               ]}
             >
@@ -78,14 +93,16 @@ export const HabitItem: React.FC<HabitItemProps> = ({
             </Text>
           )}
 
-          {/* Habit category tag (optional) */}
-          {/* Meta Row: Category + Streak */}
+          {/* Meta Information Row: Category and Streak */}
           <View style={styles.metaRow}>
+            {/* Conditional rendering: if category exists, show it */}
             {!!habit.category && (
               <View
                 style={[
+                  // Apply category tag styles
                   styles.categoryTag,
                   {
+                    // Set background and border colors
                     backgroundColor: theme.colors.surface,
                     borderColor: theme.colors.border,
                   },
@@ -93,7 +110,9 @@ export const HabitItem: React.FC<HabitItemProps> = ({
               >
                 <Text
                   style={[
+                    // Apply caption typography
                     theme.typography.caption,
+                    // Small font size and secondary color
                     { fontSize: 10, color: theme.colors.textSecondary },
                   ]}
                 >
@@ -102,9 +121,10 @@ export const HabitItem: React.FC<HabitItemProps> = ({
               </View>
             )}
 
-            {/* Streak Indicator */}
+            {/* Conditional rendering: if streak is greater than 0, show it */}
             {habit.streak > 0 && (
               <View style={styles.streakContainer}>
+                {/* Display flame emoji and streak count */}
                 <Text style={{ fontSize: 12 }}>🔥 {habit.streak}</Text>
               </View>
             )}
@@ -112,66 +132,92 @@ export const HabitItem: React.FC<HabitItemProps> = ({
         </View>
       </TouchableOpacity>
 
-      {/* Checkbox on right side */}
+      {/* Checkbox Button (right side) */}
       <TouchableOpacity
+        // Handle press to toggle completion
         onPress={handleToggle}
         style={[
+          // Apply base checkbox styles
           styles.checkbox,
           {
-            // Border or background color changes based on completion
+            // Set border color: habit color/green if complete, border color if incomplete
             borderColor: isCompleted
               ? habit.color || theme.colors.success
               : theme.colors.border,
+            // Set background color: habit color/green if complete, transparent if incomplete
             backgroundColor: isCompleted
               ? habit.color || theme.colors.success
               : "transparent",
           },
         ]}
       >
-        {/* Checkmark icon only if completed */}
+        {/* Show checkmark icon only if completed */}
         {isCompleted && <Ionicons name="checkmark" size={20} color="#FFF" />}
       </TouchableOpacity>
     </Card>
   );
 };
 
-// Basic styles
+// Define styles
 const styles = StyleSheet.create({
   card: {
-    flexDirection: "row",   // left (text) + right (checkbox)
+    // Arrange children in a row
+    flexDirection: "row",
+    // center vertically
     alignItems: "center",
+    // vertical padding
     paddingVertical: 12,
   },
   content: {
-    flex: 1,                // text area takes full width
+    // Take up remaining horizontal space
+    flex: 1,
   },
   textContainer: {
-    marginRight: 12,        // space before checkbox
+    // Add margin to the right
+    marginRight: 12,
   },
   checkbox: {
+    // Fixed width
     width: 28,
+    // Fixed height
     height: 28,
-    borderRadius: 14,       // round checkbox
+    // Rounded corners (circle)
+    borderRadius: 14,
+    // Border width
     borderWidth: 2,
+    // Center content horizontally
     justifyContent: "center",
+    // Center content vertically
     alignItems: "center",
   },
   categoryTag: {
+    // Align to the start
     alignSelf: "flex-start",
+    // Horizontal padding
     paddingHorizontal: 8,
+    // Vertical padding
     paddingVertical: 2,
+    // Rounded corners
     borderRadius: 12,
+    // Border width
     borderWidth: 1,
+    // Top margin
     marginTop: 6,
   },
   metaRow: {
+    // Row layout for meta info
     flexDirection: "row",
+    // Align items vertically
     alignItems: "center",
+    // Top margin
     marginTop: 6,
   },
   streakContainer: {
+    // Row layout for streak
     flexDirection: "row",
+    // Align items vertically
     alignItems: "center",
+    // Left margin
     marginLeft: 8,
   },
 });

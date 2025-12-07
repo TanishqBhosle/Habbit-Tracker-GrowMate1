@@ -1,3 +1,4 @@
+// Import necessary hooks from React
 import React, {
   createContext,
   useContext,
@@ -5,72 +6,85 @@ import React, {
   useEffect,
 } from "react";
 
-// Firebase auth functions
+// Import Firebase authentication functions and types
 import {
-  User,                   // Firebase user object
-  onAuthStateChanged,     // listens for login/logout
-  signOut as firebaseSignOut, // function to sign out
+  User,                   // Type definition for Firebase User
+  onAuthStateChanged,     // Function to listen for authentication state changes
+  signOut as firebaseSignOut, // Function to sign out the user, renamed to avoid conflict
 } from "firebase/auth";
 
-import { auth } from "../firebase"; // Your Firebase auth instance
+// Import the initialized auth instance from the firebase configuration file
+import { auth } from "../firebase";
 
-// What data/functions this Auth context will provide
+// Define the shape of the Auth Context data
 type AuthContextType = {
-  user: User | null;      // logged-in user (null if not logged in)
-  loading: boolean;       // true while checking user's auth status
-  signOut: () => Promise<void>; // function to log out
+  // Current logged-in user or null if not logged in
+  user: User | null;
+  // Loading state boolean, true while checking auth status
+  loading: boolean;
+  // Function to sign out the user, returns a Promise
+  signOut: () => Promise<void>;
 };
 
-// Create context (empty for now)
+// Create the context with undefined as default value
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Provider wrapper for the whole app
+// Define the AuthProvider component that wraps the application
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // Store current user
+  // State to hold the current user
   const [user, setUser] = useState<User | null>(null);
 
-  // Loading while Firebase checks the current user
+  // State to hold the loading status, default is true
   const [loading, setLoading] = useState(true);
 
-  // Run once when app starts
+  // Effect to set up the authentication state listener
   useEffect(() => {
-    // Firebase listener → runs whenever user signs in OR signs out
+    // Listen for changes in authentication state (login/logout)
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);   // save user (or null)
-      setLoading(false);       // done loading
+      // Update the user state with the current user
+      setUser(currentUser);
+      // Set loading to false as the check is complete
+      setLoading(false);
     });
 
-    // cleanup listener when component unmounts
+    // Cleanup function to unsubscribe the listener when component unmounts
     return unsubscribe;
   }, []);
 
-  // Logout function
+  // Function to handle user sign out
   const signOut = async () => {
     try {
-      await firebaseSignOut(auth); // Firebase signOut call
+      // Call Firebase's signOut function
+      await firebaseSignOut(auth);
     } catch (error) {
+      // Log any errors that occur during sign out
       console.error("Error signing out: ", error);
     }
   };
 
+  // Render the provider with the value object
   return (
-    // Make user, loading, and signOut available to the whole app
+    // Pass user, loading, and signOut to the context consumers
     <AuthContext.Provider value={{ user, loading, signOut }}>
-      {children} {/* app screens */}
+      {/* Render child components inside the provider */}
+      {children}
     </AuthContext.Provider>
   );
 };
 
-// Custom hook for easy use of authentication data
+// Custom hook to easily use the authentication context
 export const useAuth = () => {
+  // Access the context value
   const context = useContext(AuthContext);
 
-  // If used outside AuthProvider, show an error
+  // Check if context is undefined (used outside of provider)
   if (!context) {
+    // Throw an error if used incorrectly
     throw new Error("useAuth must be used within an AuthProvider");
   }
 
+  // Return the context value
   return context;
 };

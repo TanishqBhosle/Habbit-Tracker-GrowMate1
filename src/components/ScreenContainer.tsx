@@ -1,54 +1,69 @@
+// Import React library
 import React from "react";
+// Import React Native components
 import { View, StyleSheet, StatusBar, ViewStyle } from "react-native";
+// Import SafeAreaView to handle notches and safe areas
 import { SafeAreaView } from "react-native-safe-area-context";
+// Import theme context
 import { useTheme } from "../context/ThemeContext";
 
-// Props for this screen wrapper component
+// Define props for ScreenContainer
 interface ScreenContainerProps {
-  children: React.ReactNode; // The screen content inside the container
-  style?: ViewStyle;         // Extra custom styling
+  // Child components to render inside the container
+  children: React.ReactNode;
+  // Optional custom styles
+  style?: ViewStyle;
 }
 
-// Main reusable screen wrapper
+// Main ScreenContainer component to wrap screens
 export const ScreenContainer: React.FC<ScreenContainerProps> = ({
   children,
   style,
 }) => {
-  const { theme } = useTheme(); // Get theme colors
+  // Get theme values
+  const { theme } = useTheme();
 
   return (
-    // SafeAreaView ensures content doesn't go under the notch/top bar
+    // SafeAreaView ensures content is within safe boundaries (avoids notch)
     <SafeAreaView
       style={[
+        // Apply base container styles
         styles.container,
-        { backgroundColor: theme.colors.background }, // Screen background
+        // Set background color from theme
+        { backgroundColor: theme.colors.background },
       ]}
     >
-      {/* StatusBar: changes text color based on dark/light theme */}
+      {/* StatusBar configuration */}
       <StatusBar
+        // Set status bar text style: darker texts for light backgrounds, and vice versa
         barStyle={
           theme.colors.background === "#111827"
-            ? "light-content"  // white icons for dark background
-            : "dark-content"   // dark icons for light background
+            ? "light-content"
+            : "dark-content"
         }
+        // Set status bar background color
         backgroundColor={theme.colors.background}
       />
 
-      {/* Screen content area */}
+      {/* Main content view */}
       <View style={[styles.content, style]}>
+        {/* Render child components */}
         {children}
       </View>
     </SafeAreaView>
   );
 };
 
-// Basic default styles
+// Define styles
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // take full screen height
+    // Fill the available screen space
+    flex: 1,
   },
   content: {
+    // Fill the container
     flex: 1,
-    padding: 20, // space around content
+    // Add default padding
+    padding: 20,
   },
 });

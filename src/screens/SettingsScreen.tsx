@@ -1,4 +1,6 @@
+// Import React hooks
 import React, { useState } from "react";
+// Import UI components from React Native
 import {
   View,
   Text,
@@ -11,15 +13,21 @@ import {
 } from "react-native";
 
 // Theme + Auth + Habits context
+// Import theme context hook
 import { useTheme } from "../context/ThemeContext";
+// Import auth context hook
 import { useAuth } from "../context/AuthContext";
+// Import habit context hook
 import { useHabits } from "../context/HabitContext";
 
 // Formatting delete dates
+// Import date formatting function
 import { format } from "date-fns";
 
 // UI components
+// Import screen container
 import { ScreenContainer } from "../components/ScreenContainer";
+// Import card component
 import { Card } from "../components/Card";
 
 // Icons
@@ -29,30 +37,40 @@ import { Ionicons } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { MainTabParamList } from "../navigation/types";
 
+// Define props for SettingsScreen
 type SettingsScreenProps = {
+  // Navigation prop specifically for Settings screen
   navigation: NativeStackNavigationProp<MainTabParamList, "Settings">;
 };
 
+// Main SettingsScreen component
 export default function SettingsScreen({ navigation }: SettingsScreenProps) {
+  // Get theme object and helper functions
   const { theme, isDark, toggleTheme } = useTheme(); // theme + dark mode
+  // Get signOut function
   const { signOut } = useAuth();                    // sign out function
+  // Get deleted habits list
   const { deletedHabits } = useHabits();           // deleted habits list
 
+  // State to toggle deleted habits history view
   const [showHistory, setShowHistory] = useState(false); // toggle view deleted habits
 
   // Sign out confirmation popup
   const handleSignOut = async () => {
+    // Platform specific confirmation
     if (Platform.OS === 'web') {
       const confirmed = window.confirm("Are you sure you want to sign out?");
       if (confirmed) {
         signOut();
       }
     } else {
+      // Use native Alert for mobile
       Alert.alert(
         "Sign Out",
         "Are you sure you want to sign out?",
         [
           { text: "Cancel", style: "cancel" },
+          // Destructive action for sign out
           { text: "Sign Out", style: "destructive", onPress: signOut },
         ]
       );
@@ -61,11 +79,12 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
 
   // Reusable settings row component
   const renderSettingItem = (
-    icon: any,
-    title: string,
-    rightElement: React.ReactNode,
-    onPress?: () => void
+    icon: any, // Icon name
+    title: string, // Row title
+    rightElement: React.ReactNode, // Element on the right (switch, arrow, etc.)
+    onPress?: () => void // Optional click handler
   ) => (
+    // Touchable row
     <TouchableOpacity
       style={styles.settingItem}
       onPress={onPress}
@@ -80,6 +99,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
             { backgroundColor: theme.colors.background },
           ]}
         >
+          {/* Render Icon */}
           <Ionicons name={icon} size={20} color={theme.colors.primary} />
         </View>
 
@@ -100,9 +120,11 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
   );
 
   return (
+    // Wrap screen in container
     <ScreenContainer>
       {/* Header */}
       <View style={styles.header}>
+        {/* Back button */}
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}
@@ -110,6 +132,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           <Ionicons name="arrow-back" size={24} color={theme.colors.text} />
         </TouchableOpacity>
 
+        {/* Screen Title */}
         <Text
           style={[
             theme.typography.h2,
@@ -120,6 +143,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
         </Text>
       </View>
 
+      {/* Scrollable content */}
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         {/* APPEARANCE SECTION */}
         <Text
@@ -180,6 +204,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           {showHistory && (
             <View style={styles.historyContainer}>
               {deletedHabits.length === 0 ? (
+                // Empty state message
                 <Text
                   style={[
                     styles.emptyText,
@@ -189,6 +214,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
                   No deleted habits
                 </Text>
               ) : (
+                // Map through deleted habits
                 deletedHabits.map((item) => (
                   <View
                     key={item.id}
@@ -197,6 +223,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
                       { borderColor: theme.colors.border },
                     ]}
                   >
+                    {/* Habit Name */}
                     <Text
                       style={[
                         styles.historyName,
@@ -206,6 +233,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
                       {item.name}
                     </Text>
 
+                    {/* Deleted Date */}
                     <Text
                       style={[
                         styles.historyDate,
@@ -259,58 +287,89 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
 // ------------------------
 const styles = StyleSheet.create({
   header: {
+    // Row layout for header
     flexDirection: "row",
+    // Vertical alignment
     alignItems: "center",
+    // Margins
     marginBottom: 24,
     marginTop: 8,
   },
   backButton: {
+    // Padding for touch target
     padding: 4,
   },
   card: {
+    // Remove default padding for custom internal layout
     padding: 0,
+    // Clip content
     overflow: "hidden",
   },
   settingItem: {
+    // Row layout
     flexDirection: "row",
+    // Space between left and right elements
     justifyContent: "space-between",
+    // Align vertically
     alignItems: "center",
+    // Padding
     padding: 16,
   },
   settingLeft: {
+    // Row layout for icon and text
     flexDirection: "row",
+    // Align vertically
     alignItems: "center",
   },
   iconContainer: {
+    // Width
     width: 36,
+    // Height
     height: 36,
+    // Circular
     borderRadius: 18,
+    // Center icon
     justifyContent: "center",
     alignItems: "center",
   },
   historyContainer: {
+    // Top border
     borderTopWidth: 1,
+    // Semi-transparent border
     borderTopColor: "rgba(0,0,0,0.1)",
+    // Slightly shaded background
     backgroundColor: "rgba(0,0,0,0.02)",
   },
   historyItem: {
+    // Padding
     padding: 12,
+    // Indent text to align with settings text
     paddingLeft: 64,
+    // Bottom border
     borderBottomWidth: 1,
+    // Semi-transparent border
     borderBottomColor: "rgba(0,0,0,0.05)",
   },
   historyName: {
+    // Font size
     fontSize: 14,
+    // Semi-bold
     fontWeight: "600",
   },
   historyDate: {
+    // Smaller font
     fontSize: 12,
+    // Top margin
     marginTop: 2,
   },
   emptyText: {
+    // Italic text
     fontStyle: "italic",
+    // Center text
     textAlign: "center",
+    // Padding
     padding: 20,
+    // Font size
     fontSize: 14,
   },
 });
